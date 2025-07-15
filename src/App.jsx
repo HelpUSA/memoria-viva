@@ -1,34 +1,36 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React from 'react'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import { NhostProvider } from '@nhost/react'
+import { nhost } from './services/nhost'
+
+import Home from './pages/Home'
+import AuthPage from './pages/AuthPage'
+import DashboardCuidador from './pages/DashboardCuidador'
+import PainelIdoso from './pages/PainelIdoso'
+import RequireAuth from './components/RequireAuth'
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    <NhostProvider nhost={nhost}>
+      <Router>
+        <Routes>
+          {/* Rotas públicas */}
+          <Route path="/" element={<Home />} />
+          <Route path="/auth" element={<AuthPage />} />
+          <Route path="/idoso" element={<PainelIdoso />} />
+
+          {/* Rotas protegidas */}
+          <Route
+            path="/cuidador"
+            element={
+              <RequireAuth>
+                <DashboardCuidador />
+              </RequireAuth>
+            }
+          />
+        </Routes>
+      </Router>
+    </NhostProvider>
   )
 }
 
